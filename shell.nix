@@ -9,6 +9,7 @@ in pkgs.clangStdenv.mkDerivation rec {
     clang
 
     xorg.libxcb
+    xorg.libX11
 
     glew
     glfw
