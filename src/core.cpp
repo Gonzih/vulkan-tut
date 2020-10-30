@@ -4,10 +4,50 @@
 #include <iostream>
 #include <stdexcept>
 #include <cstdlib>
+#include <cstring>
 #include <vector>
 
 const uint32_t WIDTH = 800;
 const uint32_t HEIGHT = 600;
+
+const std::vector<const char*> validationLayers = {
+    "VK_LAYER_KHRONOS_validation"
+};
+
+#ifdef NDEBUG
+    const bool enableValidationLayers = true;
+#else
+    const bool enableValidationLayers = false;
+#endif
+
+bool checkValidationLayerSupport()
+{
+    uint32_t layerCount;
+    vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
+
+    std::vector<VkLayerProperties> availableLayers(layerCount);
+    vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
+
+    for (const char* layerName : validationLayers)
+    {
+        bool layerFound = false;
+        for (const auto& layerProperties : availableLayers)
+        {
+            if (strcmp(layerName, layerProperties.layerName) == 0)
+            {
+                layerFound = true;
+                break;
+            }
+        }
+
+        if (!layerFound)
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
 
 class HelloTriangleApplication
 {
@@ -39,6 +79,12 @@ private:
 
     void createInstance()
     {
+
+        if (enableValidationLayers && !checkValidationLayerSupport())
+        {
+            throw std::runtime_error("validation layers requested, but not available");
+        }
+
         VkApplicationInfo ai{};
         ai.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
         ai.pApplicationName = "Hello Triangle";
@@ -57,7 +103,14 @@ private:
         ci.pApplicationInfo = &ai;
         ci.enabledExtensionCount = glfwExtensionCount;
         ci.ppEnabledExtensionNames = glfwExtensions;
-        ci.enabledLayerCount = 0;
+
+        if (enableValidationLayers)
+        {
+           ci.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
+           ci.ppEnabledLayerNames = validationLayers.data();
+        } else {
+            ci.enabledLayerCount = 0;
+        }
 
         if (vkCreateInstance(&ci, nullptr, &instance) != VK_SUCCESS)
         {

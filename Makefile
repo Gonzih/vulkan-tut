@@ -1,6 +1,7 @@
 CXX = clang++
 
 CXXFLAGS = -Wall -Werror -g
+CXXFLAGS = -DDEBUG
 LDFLAGS += -std=c++2a
 LDFLAGS += $(shell pkg-config --libs glew glfw3 glm vulkan)
 
