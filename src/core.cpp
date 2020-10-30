@@ -4,6 +4,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <cstdlib>
+#include <vector>
 
 const uint32_t WIDTH = 800;
 const uint32_t HEIGHT = 600;
@@ -62,6 +63,17 @@ private:
         {
             throw std::runtime_error("failed to create vulkan instance!");
         }
+
+        uint32_t extensioCount = 0;
+        vkEnumerateInstanceExtensionProperties(nullptr, &extensioCount, nullptr);
+        std::vector<VkExtensionProperties> exts(extensioCount);
+
+        vkEnumerateInstanceExtensionProperties(nullptr, &extensioCount, exts.data());
+
+        for (const auto& ext : exts)
+        {
+            std::cout << '\t' << ext.extensionName << '\n';
+        }
     }
 
     void mainLoop()
@@ -74,6 +86,7 @@ private:
 
     void cleanup()
     {
+        vkDestroyInstance(instance, nullptr);
         glfwDestroyWindow(window);
         glfwTerminate();
     }
