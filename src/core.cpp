@@ -11,7 +11,9 @@ const uint32_t WIDTH = 800;
 const uint32_t HEIGHT = 600;
 
 const std::vector<const char*> validationLayers = {
-    "VK_LAYER_KHRONOS_validation"
+    /* This is a newer name for the same layer */
+    /* "VK_LAYER_KHRONOS_validation" */
+    "VK_LAYER_LUNARG_standard_validation"
 };
 
 #ifdef NDEBUG
@@ -33,6 +35,7 @@ bool checkValidationLayerSupport()
         bool layerFound = false;
         for (const auto& layerProperties : availableLayers)
         {
+            /* printf("Comparing %s and %s\n", layerName, layerProperties.layerName); */
             if (strcmp(layerName, layerProperties.layerName) == 0)
             {
                 layerFound = true;
@@ -42,6 +45,7 @@ bool checkValidationLayerSupport()
 
         if (!layerFound)
         {
+            printf("Could not find %s layer\n", layerName);
             return false;
         }
     }
