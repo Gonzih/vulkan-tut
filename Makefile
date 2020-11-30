@@ -1,4 +1,12 @@
-CXX = clang++
+CC_ARGS_SCRIPT = $(HOME)/.vim/bundle/dein.vim/repos/github.com/xavierd/clang_complete/bin/cc_args.py
+
+ifneq ("$(wildcard $(CC_ARGS_SCRIPT))","")
+	CXX_PREFIX = $(CC_ARGS_SCRIPT)
+else
+	CXX_PREFIX =
+endif
+
+CXX = $(CXX_PREFIX) clang++
 
 CXXFLAGS = -Wall -Werror -g
 CXXFLAGS = -DNDEBUG

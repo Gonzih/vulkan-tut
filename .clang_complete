@@ -1,1 +1,2 @@
-`pkg-config --cflags glew glfw3 glm`
+-DNDEBUG
+-std=c++2a
